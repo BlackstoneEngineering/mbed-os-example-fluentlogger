@@ -16,9 +16,10 @@
 
 #include "mbed.h"
 #include "FluentLogger.h"
+#include "wifi-ism43362/ISM43362Interface.h"
 #include "TCPSocket.h"
 
-NetworkInterface net;
+ISM43362Interface net;
 
 #define WIFI_SSID       "CHANGE SSID"
 #define WIFI_PASSWORD   "CHANGE PASSWORD"
