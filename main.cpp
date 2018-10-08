@@ -93,7 +93,7 @@ int main()
         // Infinite loop sending data to debug and treasure data
         printf("\r\n --- Infinite Loop\r\n");
         logger.log("td.fluentd_database.test",mp);
-        logger.log("debug.test",mp)
+        logger.log("debug.test",mp);
         printf("\r\n Data sent, waiting 10s...");
         wait_ms(10000);
     }
