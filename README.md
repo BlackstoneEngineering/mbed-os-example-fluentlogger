@@ -15,6 +15,8 @@ Use the included example_fluentd.conf fil to configure your instance. This will 
 ### build embedded app
 Run the example code on your device. You can either [import to the online compiler](http://os.mbed.com/compiler/?import=https%3A%2F%2Fgithub.com%2FBlackstoneEngineering%2Fmbed-os-example-fluentlogger) or use mbed CLI as below to clone it locally, compile and load it to the board. 
 
+Make sure to change the ssid and password in `main.cpp` to match your local network. 
+
 ```shell
 $ mbed import https://github.com/BlackstoneEngineering/mbed-os-example-fluentlogger 
 $ mbed compile --target auto --toolchain GCC_ARM --flash --sterm
@@ -27,4 +29,4 @@ For example, sending data to a tag called `td.mydatabase.mytable` will log the d
 Feel free to modify the example config file to try this out. 
 
 ## Liscense
-Apache 2.0, as always. 
+Apache 2.0, as always.
