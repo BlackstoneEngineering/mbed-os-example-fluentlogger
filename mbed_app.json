@@ -1,0 +1,16 @@
+{
+    "macros": [ "MBED_HEAP_STATS_ENABLED=1",
+                "MBED_STACK_STATS_ENABLED=1",
+                "MBED_MEM_TRACING_ENABLED=1"
+            ],
+    "config": {
+        "wifi-shield": {
+            "help": "Options are internal, WIFI_ESP8266, WIFI_IDW0XX1",
+            "value": "WIFI_ISM43362"
+        },
+    },
+    "target_overrides": {
+        "*": {
+        }
+    }
+}
