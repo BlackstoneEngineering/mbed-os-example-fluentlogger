@@ -16,29 +16,40 @@
 
 #include "mbed.h"
 #include "FluentLogger.h"
-#include "wifi-ism43362/ISM43362Interface.h"
 #include "TCPSocket.h"
 
-ISM43362Interface net;
+// Default network interface object. Don't forget to change the WiFi SSID/password in mbed_app.json if you're using WiFi.
+NetworkInterface *net = NetworkInterface::get_default_instance();
 
-#define WIFI_SSID       "CHANGE SSID"
-#define WIFI_PASSWORD   "CHANGE PASSWORD"
-FluentLogger logger(&net,"192.168.1.11",24224);  // please set your Fluentd server
+FluentLogger logger(&net,"192.168.1.101",24224);  // please set your Fluentd server
 
 int main() 
 {
-    int ret = net.connect(WIFI_SSID, WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
-    if (ret != 0) {
-        printf("\nConnection error: %d\n", ret);
+    // Connect to the internet (DHCP is expected to be on)
+    printf("Connecting to the network using the default network interface...\n");
+    net = NetworkInterface::get_default_instance();
+
+    nsapi_error_t net_status = -1;
+    for (int tries = 0; tries < 3; tries++) {
+        net_status = net->connect();
+        if (net_status == NSAPI_ERROR_OK) {
+            break;
+        } else {
+            printf("Unable to connect to network. Retrying...\n");
+        }
+    }
+
+    if (net_status != NSAPI_ERROR_OK) {
+        printf("ERROR: Connecting to the network failed (%d)!\n", net_status);
         return -1;
     }
 
-    printf("Success\n\n");
-    printf("MAC: %s\n", net.get_mac_address());
-    printf("IP: %s\n", net.get_ip_address());
-    printf("Netmask: %s\n", net.get_netmask());
-    printf("Gateway: %s\n", net.get_gateway());
-    printf("RSSI: %d\n\n", net.get_rssi());
+    printf("Connected to the network successfully. IP address: %s\n", net->get_ip_address());
+    printf("MAC: %s\n", net->get_mac_address());
+    printf("IP: %s\n", net->get_ip_address());
+    printf("Netmask: %s\n", net->get_netmask());
+    printf("Gateway: %s\n", net->get_gateway());
+    // printf("RSSI: %d\n\n", net->get_rssi());
 
     uMP mp(128);     //Message body
 
@@ -98,5 +109,5 @@ int main()
         wait_ms(10000);
     }
 
-    net.disconnect();  
+    net->disconnect();  
 }
