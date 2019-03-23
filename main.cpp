@@ -21,7 +21,7 @@
 // Default network interface object. Don't forget to change the WiFi SSID/password in mbed_app.json if you're using WiFi.
 NetworkInterface *net = NetworkInterface::get_default_instance();
 
-FluentLogger logger(&net,"192.168.1.101",24224);  // please set your Fluentd server
+FluentLogger logger(net,"192.168.1.101",24224);  // please set your Fluentd server
 
 int main() 
 {
