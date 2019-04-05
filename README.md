@@ -94,5 +94,15 @@ For example, sending data to a tag called `td.mydatabase.mytable` will log the d
 
 Feel free to modify the example config file to try this out. 
 
+## Debugging
+
+For more verbose debug messages turn on the following flags in `mbed_app.json`
+
+```
+MBEDTLS_SSL_DEBUG_ALL=1
+
+"mbed-trace.enable" : true
+```
+
 ## Liscense
 Apache 2.0, as always.
