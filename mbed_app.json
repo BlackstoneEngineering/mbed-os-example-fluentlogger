@@ -1,17 +1,21 @@
 {
     "macros": [ "MBED_HEAP_STATS_ENABLED=1",
                 "MBED_STACK_STATS_ENABLED=1",
-                "MBED_MEM_TRACING_ENABLED=1"
+                "MBED_MEM_TRACING_ENABLED=1",
+                "MBEDTLS_USER_CONFIG_FILE=\"mbedos_fluentlogger_tls_config.h\"",
+                "MBEDTLS_SSL_DEBUG_ALL=0"
+                
             ],
     "config": {
         "main-stack-size": {
             "value": 7000
         }
+
     },
     "target_overrides": {
         "*": {
             "platform.stdio-convert-newlines": true,
-            "mbed-trace.enable"                 : null,
+            "mbed-trace.enable"                 : false,
             "nsapi.default-wifi-security"       : "WPA_WPA2",
             "nsapi.default-wifi-ssid"           : "\"SSID\"",
             "nsapi.default-wifi-password"       : "\"PASSWORD\""

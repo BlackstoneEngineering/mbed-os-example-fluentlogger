@@ -17,14 +17,21 @@
 #include "mbed.h"
 #include "FluentLogger.h"
 #include "TCPSocket.h"
+#include "fluentd-sslcert.h"
+#include "mbed_trace.h"
+
 
 // Default network interface object. Don't forget to change the WiFi SSID/password in mbed_app.json if you're using WiFi.
 NetworkInterface *net = NetworkInterface::get_default_instance();
 
-FluentLogger logger(net,"192.168.1.101",24224);  // please set your Fluentd server
+// We strongly reccomend using TLS secured transfer methods. 
+FluentLogger logger(net,SSL_CA_PEM,"192.168.1.85",24228);  // Send secure data over TLS socket to fluentd
+// FluentLogger logger(net,"192.168.1.85",24227);  // Send unsecure data over TCP socket
 
 int main() 
 {
+    mbed_trace_init(); // Enable printf traces in sub libraries
+
     // Connect to the internet (DHCP is expected to be on)
     printf("Connecting to the network using the default network interface...\n");
     net = NetworkInterface::get_default_instance();
@@ -49,7 +56,7 @@ int main()
     printf("IP: %s\n", net->get_ip_address());
     printf("Netmask: %s\n", net->get_netmask());
     printf("Gateway: %s\n", net->get_gateway());
-    // printf("RSSI: %d\n\n", net->get_rssi());
+    // printf("RSSI: %d\n\n", net->get_rssi()); // Only valid for Wifi connection
 
     uMP mp(128);     //Message body
 
@@ -64,7 +71,8 @@ int main()
     mp.set_sint(-128);            // 5th element
     mp.set_sint(-32768);          // 6th element
     mp.set_sint(-2147483648);     // 7th element
-    logger.log("debug.test", mp); // emit
+    printf("\r\n *** debug.test sint");
+    logger.log("debug.test", mp); // emit to debug console on fluentd 
 
     //array sample with primitive functions
     //YYYY-MM-DD HH:MM:SS zzzzz debug.test: ["uint",0,1,128,255,65535,4294967295]
@@ -77,7 +85,8 @@ int main()
     mp.set_uint(0xff);            // 5th element
     mp.set_uint(0xffff);          // 6th element
     mp.set_uint(0xffffffff);      // 7th element
-    logger.log("debug.test", mp);
+    printf("\r\n *** debug.test uint");
+    logger.log("debug.test", mp); // emit to debug console on fluentd 
 
     //map sample with primitive functions
     //YYYY-MM-DD HH:MM:SS zzzzz debug.test: {"string":"Hi!","float":0.3333333432674408,"double":0.3333333333333333}
@@ -89,7 +98,8 @@ int main()
     mp.set_float(1.0/3);               // 2nd value
     mp.set_str("double", 6);           // 3rd key
     mp.set_double(1.0/3);              // 3rd value
-    logger.log("debug.test", mp);      // emit
+    printf("\r\n *** debug.test map");
+    logger.log("debug.test", mp);      // emit to debug console on fluentd 
 
     //map sample with simple method. same as prev sample (but need more CPU cycle)
     //YYYY-MM-DD HH:MM:SS zzzzz debug.test: {"string":"Hi!","float":0.3333333432674408,"double":0.3333333333333333}
@@ -98,14 +108,15 @@ int main()
     mp.map("string", "Hi!");           // 1st key/value pair
     mp.map("float", (float)(1.0/3));   // 2nd key/value pair
     mp.map("double", (double)(1.0/3)); // 3rd key/value pair
-    logger.log("debug.test", mp);      // emit
+    printf("\r\n *** debug.test simple method");
+    logger.log("debug.test", mp);      // emit to debug console on fluentd 
 
     while(1) {
         // Infinite loop sending data to debug and treasure data
         printf("\r\n --- Infinite Loop\r\n");
-        logger.log("td.fluentd_database.test",mp);
+        logger.log("td.fluentd_database.test",mp);  // send to Treasure Data.database.table
         logger.log("debug.test",mp);
-        printf("\r\n Data sent, waiting 10s...");
+        printf("Data sent, waiting 10s... ---\r\n");
         wait_ms(10000);
     }
 
